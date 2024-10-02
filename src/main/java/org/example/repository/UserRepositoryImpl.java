@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("myJPAUnit");
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myJPAUnit");
 
     @Override
     public void createUser(User user) {
