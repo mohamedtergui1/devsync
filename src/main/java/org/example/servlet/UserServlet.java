@@ -27,19 +27,20 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
-        User newUser = new User();
-        mapData(req, newUser);
-        userService.createUser(newUser);
-        resp.sendRedirect("user");
-    }
+        if(req.getParameter("_method") == null) {
+            User newUser = new User();
+            mapData(req, newUser);
+            userService.createUser(newUser);
+            resp.sendRedirect("user");
+        }
+        else {
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
-        User newUser = new User();
-        newUser.setId((long) Integer.parseInt(req.getParameter("id")));
-        mapData(req, newUser);
-        userService.updateUser(newUser);
-        resp.sendRedirect("user");
+            if (req.getParameter("_method").equalsIgnoreCase("delete"))
+                Delete(req, resp);
+            else if (req.getParameter("_method").equalsIgnoreCase("put"))
+                Put(req, resp);
+        }
+
     }
 
     private void mapData(HttpServletRequest req, User newUser) {
@@ -51,8 +52,19 @@ public class UserServlet extends HttpServlet {
         newUser.setRole(UserRole.valueOf(req.getParameter("role")));
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)  {
+
+    protected void Delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         userService.deleteUser((long) Integer.parseInt(req.getParameter("id")));
+        resp.sendRedirect("user");
     }
+
+
+    protected void Put(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
+        User newUser = new User();
+        newUser.setId((long) Integer.parseInt(req.getParameter("id")));
+        mapData(req, newUser);
+        userService.updateUser(newUser);
+        resp.sendRedirect("user");
+    }
+
 }
