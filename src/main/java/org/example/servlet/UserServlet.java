@@ -13,7 +13,7 @@ import org.example.service.UserServiceImpl;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/user")
+@WebServlet("/")
 public class UserServlet extends HttpServlet {
 
     private final UserService userService = new UserServiceImpl();
@@ -31,7 +31,6 @@ public class UserServlet extends HttpServlet {
             User newUser = new User();
             mapData(req, newUser);
             userService.createUser(newUser);
-            resp.sendRedirect("user");
         }
         else {
 
@@ -40,6 +39,7 @@ public class UserServlet extends HttpServlet {
             else if (req.getParameter("_method").equalsIgnoreCase("put"))
                 Put(req, resp);
         }
+        resp.sendRedirect("");
 
     }
 
@@ -55,7 +55,7 @@ public class UserServlet extends HttpServlet {
 
     protected void Delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         userService.deleteUser((long) Integer.parseInt(req.getParameter("id")));
-        resp.sendRedirect("user");
+
     }
 
 
@@ -64,7 +64,7 @@ public class UserServlet extends HttpServlet {
         newUser.setId((long) Integer.parseInt(req.getParameter("id")));
         mapData(req, newUser);
         userService.updateUser(newUser);
-        resp.sendRedirect("user");
+
     }
 
 }
