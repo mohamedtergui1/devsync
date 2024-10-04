@@ -10,4 +10,6 @@ public interface UserRepository {
     void updateUser(User user);
     void deleteUser(Long id);
     List<User> listUsers();
+
+    List<User> search(String query);
 }

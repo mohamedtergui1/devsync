@@ -1,12 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.entity.User" %>
 
-<html>
-<head>
-    <title>Home Page</title>
-</head>
-<body>
-<div class="w-full text-center text-3xl " >list des utilisateur</div>
 
 
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full antialiased">
@@ -23,7 +17,7 @@
                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required="">
+                            <input type="text" id="simplesearch" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required="">
                         </div>
                     </form>
                 </div>
@@ -253,11 +247,11 @@
                         </div>
                         <div>
                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">email</label>
-                            <input type="text" value="<%=user.getEmail()%>>" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="$299">
+                            <input type="text" value="<%=user.getEmail()%>" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="$299">
                         </div>
                         <div>
                             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">password</label>
-                            <input type="password" value="<%=user.getPassword()%>>"  name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="$299">
+                            <input type="password" value=""  name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="let it free if you don't want to change the password">
                         </div>
                         <div class="max-w-sm mx-auto">
                             <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a role</label>
@@ -361,9 +355,14 @@
 <%
     }
 %>
-</body>
-</html>
 
-<!-- Start block -->
+<script>
+    document.getElementById("simplesearch").addEventListener('input',(e)=>{
+        fetch("search?query=" + e.target.value).then(response => {
+            return response.json()
+        }).then(responseJson =>{
+                console.log(responseJson);
+        }  )
+    })
 
-<!-- End block -->
+</script>

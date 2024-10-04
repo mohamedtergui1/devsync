@@ -8,11 +8,11 @@
 
 </head>
 <body>
-
+<div class="min-h-screen flex justify-center flex-col items-center" >
 
     <jsp:include page="userList.jsp" />
 
-
+</div>
 
 <jsp:include page="footer.jsp" />
 

@@ -4,12 +4,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.example.entity.User;
+import org.hibernate.service.spi.InjectService;
 
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myJPAUnit");
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa");
 
     @Override
     public void createUser(User user) {
@@ -56,4 +57,21 @@ public class UserRepositoryImpl implements UserRepository {
         em.close();
         return users;
     }
+
+    @Override
+    public List<User> search(String query) {
+        List<User> users = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            users = em.createQuery("SELECT u FROM User u WHERE u.username LIKE :query or u.firstName LIKE :query or u.lastName lIKE :query", User.class)
+                    .setParameter("query", "%" + query + "%")
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return users;
+    }
+
 }
