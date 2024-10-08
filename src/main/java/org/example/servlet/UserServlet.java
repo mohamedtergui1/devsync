@@ -28,29 +28,24 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        User newUser = new User();
+
         if(req.getParameter("_method") == null) {
-            User newUser = new User();
-            mapData(req, newUser);  // This will now hash the password
+            newUser.setPassword(BCrypt.hashpw(req.getParameter("password"), BCrypt.gensalt()));
+            mapData(req, newUser);
             userService.createUser(newUser);
         } else {
             if (req.getParameter("_method").equalsIgnoreCase("delete"))
                 Delete(req, resp);
-            else if (req.getParameter("_method").equalsIgnoreCase("put"))
+            else if (req.getParameter("_method").equalsIgnoreCase("put")){
                 Put(req, resp);
+            }
         }
         resp.sendRedirect("");
     }
 
     private void mapData(HttpServletRequest req, User newUser) {
         newUser.setUsername(req.getParameter("username"));
-        if( req.getParameter("password") == null || req.getParameter("password").isEmpty()) {
-            String plainPassword = req.getParameter("password");
-            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
-            newUser.setPassword(hashedPassword);
-        }
-        else {
-            newUser.setPassword(userService.readUser( (long) Integer.parseInt(req.getParameter("id"))).getPassword());
-        }
         newUser.setFirstName(req.getParameter("firstName"));
         newUser.setLastName(req.getParameter("lastName"));
         newUser.setEmail(req.getParameter("email"));
@@ -63,8 +58,16 @@ public class UserServlet extends HttpServlet {
 
     protected void Put(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User newUser = new User();
-        newUser.setId(Long.parseLong(req.getParameter("id")));
-        mapData(req, newUser);  // This will hash the password as well if it's updated
+        newUser.setId(Long.valueOf(req.getParameter("id")));
+        if(req.getParameter("password") != null && !req.getParameter("password").isEmpty()) {
+            String plainPassword = req.getParameter("password");
+            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
+            newUser.setPassword(hashedPassword);
+        }
+        else {
+            newUser.setPassword(userService.readUser(newUser.getId()).getPassword());
+        }
+        mapData(req, newUser);
         userService.updateUser(newUser);
     }
 }
