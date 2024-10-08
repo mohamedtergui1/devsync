@@ -3,6 +3,8 @@ package org.example.entity;
 import jakarta.persistence.*;
 import org.example.enums.UserRole;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users") // Table name in the database
 public class User {
@@ -29,9 +31,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
+    @OneToMany(mappedBy = "assignedTo")
+    private List<Task> tasks;
+
 
     // Constructors
-    public User() {}
+    public User() {
+    }
 
     public User(String username, String password, String firstName, String lastName, String email, UserRole role) {
         this.username = username;
@@ -42,7 +48,14 @@ public class User {
         this.role = role;
     }
 
-    // Getters and Setters
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
     public Long getId() {
         return id;
     }

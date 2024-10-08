@@ -1,22 +1,22 @@
 package org.example.repository;
 
 import jakarta.persistence.EntityManager;
-
 import org.example.entity.Tag;
+import org.example.repository.base.Repository;
 
 import java.util.List;
 
-public class TagRepositoryImpl extends Repository  implements TagRepository {
+public class TagRepositoryImpl extends Repository implements TagRepository {
 
     @Override
     public void createTag(Tag tag) {
-       executeInTransaction(em -> em.persist(tag));
+        executeInTransaction(em -> em.persist(tag));
     }
 
     @Override
     public Tag readTag(Long id) {
         EntityManager em = emf.createEntityManager();
-        Tag tag =em.find(Tag.class, id);
+        Tag tag = em.find(Tag.class, id);
         em.close();
         return tag;
     }
@@ -30,16 +30,16 @@ public class TagRepositoryImpl extends Repository  implements TagRepository {
     public void deleteTag(Long id) {
         executeInTransaction(em ->
                 {
-                   Tag tag = em.find(Tag.class, id);
-                   if(tag != null) {
-                       em.remove(tag);
-                   }
+                    Tag tag = em.find(Tag.class, id);
+                    if (tag != null) {
+                        em.remove(tag);
+                    }
                 }
         );
     }
 
     @Override
-    public List<Tag> listTasks() {
+    public List<Tag> listTags() {
         EntityManager em = emf.createEntityManager();
         List<Tag> tags = em.createQuery("SELECT T FROM Tag T", Tag.class).getResultList();
         return tags;

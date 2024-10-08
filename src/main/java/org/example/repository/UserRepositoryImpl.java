@@ -3,6 +3,7 @@ package org.example.repository;
 import jakarta.persistence.EntityManager;
 
 import org.example.entity.User;
+import org.example.repository.base.Repository;
 
 
 import java.util.List;

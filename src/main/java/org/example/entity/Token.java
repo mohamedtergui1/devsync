@@ -10,7 +10,7 @@ import java.util.Date;
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Enumerated(EnumType.STRING)
     private TokenType type;
@@ -37,7 +37,7 @@ public class Token {
         return expirationDate;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -53,7 +53,7 @@ public class Token {
         this.expirationDate = expirationDate;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
