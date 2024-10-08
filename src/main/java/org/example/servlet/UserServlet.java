@@ -1,5 +1,6 @@
 package org.example.servlet;
 
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,8 +17,8 @@ import java.util.List;
 
 @WebServlet("/user")
 public class UserServlet extends HttpServlet {
-
-    private final UserService userService = new UserServiceImpl();
+    @Inject()
+    private  UserService userService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

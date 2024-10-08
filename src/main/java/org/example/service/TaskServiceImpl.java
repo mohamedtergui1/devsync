@@ -12,7 +12,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository = new TaskRepositoryImpl();
     }
     @Override
-    public void createTag(Task task) {
+    public void createTask(Task task) {
         taskRepository.createTask(task);
     }
 

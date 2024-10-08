@@ -31,6 +31,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
+
     @OneToMany(mappedBy = "assignedTo")
     private List<Task> tasks;
 

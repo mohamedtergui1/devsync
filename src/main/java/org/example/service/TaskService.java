@@ -5,7 +5,7 @@ import org.example.entity.Task;
 import java.util.List;
 
 public interface TaskService {
-    void createTag(Task task);
+    void createTask(Task task);
 
     Task readTask(long id);
 

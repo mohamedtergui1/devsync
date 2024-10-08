@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.entity.Task" %>
 <%@ page import="org.example.entity.Tag" %>
+<%@ page import="org.example.entity.User" %>
 
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full antialiased">
   <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -130,6 +131,7 @@
 
           <%
             List<Task> tasks = (List<Task>) request.getAttribute("tasks");
+            List<User> users = (List<User>) request.getAttribute("users");
 
             if (tasks == null || tasks.isEmpty()) {
               out.println("<p>No TASKs found in the database.</p>");
@@ -301,11 +303,52 @@
 
           <div>
             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> name</label>
-            <input type="text" name="name"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex. Apple iMac 27&ldquo;">
+            <input type="text" name="title"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex. Apple iMac 27&ldquo;">
+          </div>
+          <div>
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> name</label>
+            <input type="text" name="description"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex. Apple iMac 27&ldquo;">
+          </div> <div>
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> name</label>
+            <input type="datetime-local" name="due_date"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex. Apple iMac 27&ldquo;">
+          </div>
+          <div class="max-w-sm mx-auto">
+            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a role</label>
+            <select id="countries" name="assigned_to" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <%
+              for(User user:users){
+            %>
+              <option value="<%=user.getId()%>" ><%=user.getUsername()%></option>
+              <% } %>
+            </select>
+          </div>
+          <div class="max-w-sm mx-auto">
+            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a role</label>
+            <select id="za" name="created_by" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <%
+                for(User user:users){
+              %>
+              <option value="<%=user.getId()%>" ><%=user.getUsername()%></option>
+              <% } %>
+            </select>
           </div>
 
 
-
+            <select
+                    id="select-role"
+                    name="tags[]"
+                    multiple
+                    placeholder="Select roles..."
+                    autocomplete="off"
+                    class="block w-full rounded-sm cursor-pointer focus:outline-none"
+                    multiple
+            >
+               <%  List<Tag> tags = (List<Tag>) request.getAttribute("tags");
+                  for (Tag tag :tags){
+               %>
+              <option value="<%=tag.getId()%>" ><%=tag.getName()%></option>
+              <% } %>
+            </select>
 
         </div>
         <div class="flex items-center space-x-4">
@@ -321,4 +364,9 @@
     </div>
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script>
+  new TomSelect('#select-role', {
+    maxItems: 12,
+  });
+</script>
