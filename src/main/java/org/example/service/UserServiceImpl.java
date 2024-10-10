@@ -1,14 +1,17 @@
 package org.example.service;
 
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
 import org.example.repository.UserRepositoryImpl;
 
 import java.util.List;
-
+@Stateless
 public class UserServiceImpl implements UserService {
-
-    private final UserRepository userRepository = new UserRepositoryImpl();
+    @Inject
+    private UserRepository userRepository;
 
     @Override
     public void createUser(User user) {

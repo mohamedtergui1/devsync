@@ -1,13 +1,17 @@
 package org.example.service;
 
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import org.example.entity.Tag;
 import org.example.repository.TagRepository;
 import org.example.repository.TagRepositoryImpl;
 
 import java.util.List;
-
+@Stateless
 public class TagServiceImpl implements TagService {
-    TagRepository tagRepository = new TagRepositoryImpl();
+    @Inject
+    TagRepository tagRepository;
     @Override
     public void createTag(Tag tag) {
         tagRepository.createTag(tag);

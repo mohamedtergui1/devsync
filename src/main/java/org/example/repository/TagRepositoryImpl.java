@@ -1,47 +1,50 @@
 package org.example.repository;
 
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.example.entity.Tag;
-import org.example.repository.base.Repository;
+
 
 import java.util.List;
 
-public class TagRepositoryImpl extends Repository implements TagRepository {
+@Stateless
+public class TagRepositoryImpl  implements TagRepository {
+
+    // EJB will inject the EntityManager
+    @PersistenceContext(unitName = "jpa")
+    private EntityManager em;
 
     @Override
     public void createTag(Tag tag) {
-        executeInTransaction(em -> em.persist(tag));
+        // No need to manually manage transactions; EJB will handle it
+        em.persist(tag);
     }
 
     @Override
     public Tag readTag(Long id) {
-        EntityManager em = emf.createEntityManager();
-        Tag tag = em.find(Tag.class, id);
-        em.close();
-        return tag;
+        // Use the injected EntityManager to retrieve the entity
+        return em.find(Tag.class, id);
     }
 
     @Override
     public void updateTag(Tag tag) {
-        executeInTransaction(em -> em.merge(tag));
+        // EJB automatically manages the transaction for you
+        em.merge(tag);
     }
 
     @Override
     public void deleteTag(Long id) {
-        executeInTransaction(em ->
-                {
-                    Tag tag = em.find(Tag.class, id);
-                    if (tag != null) {
-                        em.remove(tag);
-                    }
-                }
-        );
+        // Same as other methods, EJB will handle the transaction scope
+        Tag tag = em.find(Tag.class, id);
+        if (tag != null) {
+            em.remove(tag);
+        }
     }
 
     @Override
     public List<Tag> listTags() {
-        EntityManager em = emf.createEntityManager();
-        List<Tag> tags = em.createQuery("SELECT T FROM Tag T", Tag.class).getResultList();
-        return tags;
+        // Query the database using the injected EntityManager
+        return em.createQuery("SELECT t FROM Tag t", Tag.class).getResultList();
     }
 }

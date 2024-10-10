@@ -1,5 +1,7 @@
 package org.example.servlet;
 
+import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +16,8 @@ import java.io.IOException;
 import java.util.List;
 @WebServlet(name = "tasks" , urlPatterns = "/tasks")
 public class TaskServlet  extends HttpServlet {
-    TaskService taskService = new TaskServiceImpl();
+    @EJB
+    TaskService taskService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

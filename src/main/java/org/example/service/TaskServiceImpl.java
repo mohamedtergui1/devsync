@@ -1,16 +1,19 @@
 package org.example.service;
 
+import jakarta.ejb.EJB;
+
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import org.example.entity.Task;
 import org.example.repository.TaskRepository;
-import org.example.repository.TaskRepositoryImpl;
+
 
 import java.util.List;
-
+@Stateless
 public class TaskServiceImpl implements TaskService {
+    @Inject
     TaskRepository taskRepository;
-    public TaskServiceImpl() {
-        taskRepository = new TaskRepositoryImpl();
-    }
+
     @Override
     public void createTag(Task task) {
         taskRepository.createTask(task);

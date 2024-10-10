@@ -1,40 +1,38 @@
 package org.example.repository;
 
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-
+import jakarta.persistence.PersistenceContext;
 import org.example.entity.User;
-import org.example.repository.base.Repository;
-
 
 import java.util.List;
 
-public class UserRepositoryImpl extends Repository implements UserRepository {
+@Stateless
+public class UserRepositoryImpl implements UserRepository {
 
-
+    @PersistenceContext(unitName = "jpa")
+    private EntityManager em;  // Injecting the EntityManager
 
     @Override
     public void createUser(User user) {
-        executeInTransaction((em)-> em.persist(user));
+        executeInTransaction((em) -> em.persist(user));
     }
 
     @Override
     public User readUser(Long id) {
-        EntityManager em = emf.createEntityManager();
-        User user = em.find(User.class, id);
-        em.close();
-        return user;
+        return em.find(User.class, id);
     }
 
     @Override
     public void updateUser(User user) {
-         executeInTransaction((em)-> em.merge(user));
+        executeInTransaction((em) -> em.merge(user));
     }
 
     @Override
     public void deleteUser(Long id) {
-        executeInTransaction((em)-> {
+        executeInTransaction((em) -> {
             User user = em.find(User.class, id);
-            if(user != null) {
+            if (user != null) {
                 em.remove(user);
             }
         });
@@ -42,26 +40,39 @@ public class UserRepositoryImpl extends Repository implements UserRepository {
 
     @Override
     public List<User> listUsers() {
-        EntityManager em = emf.createEntityManager();
-        List<User> users = em.createQuery("SELECT u FROM User u", User.class).getResultList();
-        em.close();
-        return users;
+        return em.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
     @Override
     public List<User> search(String query) {
         List<User> users = null;
-        EntityManager em = emf.createEntityManager();
         try {
-            users = em.createQuery("SELECT u FROM User u WHERE u.username LIKE :query or u.firstName LIKE :query or u.lastName lIKE :query", User.class)
+            users = em.createQuery("SELECT u FROM User u WHERE u.username LIKE :query OR u.firstName LIKE :query OR u.lastName LIKE :query", User.class)
                     .setParameter("query", "%" + query + "%")
                     .getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            em.close();
         }
         return users;
     }
 
+    // Utility method for handling transactions
+    private void executeInTransaction(EntityManagerAction action) {
+        try {
+            em.getTransaction().begin();
+            action.execute(em);
+            em.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;  // rethrow the exception after rollback
+        }
+    }
+
+    // Functional interface for transaction actions
+    @FunctionalInterface
+    private interface EntityManagerAction {
+        void execute(EntityManager em);
+    }
 }
