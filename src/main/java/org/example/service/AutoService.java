@@ -1,6 +1,6 @@
 package org.example.service;
 
-public interface TokenService {
+public interface AutoService {
     void editToken();
     void deleteToken();
 }

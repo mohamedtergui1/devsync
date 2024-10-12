@@ -4,12 +4,14 @@ import jakarta.ejb.Schedule;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
+import org.example.entity.Task;
 import org.example.entity.Token;
+import org.example.enums.TaskStatus;
 
 import java.util.List;
 
 @Stateless
-public class TokenServiceImpl implements TokenService {
+public class AutoServiceImpl implements AutoService {
 
 
     @Schedule(hour = "0", minute = "0", persistent = false)
@@ -27,6 +29,27 @@ public class TokenServiceImpl implements TokenService {
             em.getTransaction().rollback();
             e.printStackTrace();
         } finally {
+            em.close();
+        }
+    }
+
+    //@Schedule(hour = "0", minute = "0", persistent = false)
+    @Schedule( second = "0", persistent = false)
+    public void checkTaskDueDate() {
+        EntityManager em = Persistence.createEntityManagerFactory("jpa").createEntityManager();
+        try {
+            // Utilisation d'une transaction pour garantir la cohérence des données
+            List<Task> tasks = em.createQuery("from Task t WHERE t.status != :status AND t.dueDate < CURRENT_TIMESTAMP", Task.class)
+                    .setParameter("status", TaskStatus.COMPLETED)
+                    .getResultList();
+
+            for (Task task : tasks) {
+                task.setStatus(TaskStatus.OVERDUE);
+                em.merge(task);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             em.close();
         }
     }

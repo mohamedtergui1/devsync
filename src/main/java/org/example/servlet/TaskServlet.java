@@ -115,6 +115,19 @@ public class TaskServlet  extends HttpServlet {
                     return;
                 }
                 put(req, resp);
+            } else if(req.getParameter("_method").equalsIgnoreCase("done")){
+                    Task task = taskService.readTask(Long.parseLong(req.getParameter("id")));
+                         LocalDateTime now = LocalDateTime.now();
+
+                 if(now.isAfter(task.getDueDate())) {
+                     req.setAttribute("error", "you cant make as done because the due date is passed");
+                     doGet(req, resp);
+                     return;
+                 }
+                 task.setStatus(TaskStatus.COMPLETED);
+                 task.setCompleted(true);
+                 taskService.updateTask(task,UserRole.MANAGER);
+
             }
         }
         resp.sendRedirect("tasks");
