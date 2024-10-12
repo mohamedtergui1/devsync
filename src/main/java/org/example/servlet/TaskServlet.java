@@ -43,7 +43,8 @@ public class TaskServlet  extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
+        User auth = (User) req.getSession().getAttribute("authenticatedUser");
+
         if(req.getParameter("_method") == null) {
             String dueDateStr = req.getParameter("due_date");
 
@@ -67,7 +68,6 @@ public class TaskServlet  extends HttpServlet {
                 doGet(req, resp);
                 return;
             }
-            User auth = (User) req.getSession().getAttribute("authenticatedUser");
             Task task = new Task();
             mapData(req, task);
             if (auth.getRole() == UserRole.MANAGER)
@@ -82,8 +82,15 @@ public class TaskServlet  extends HttpServlet {
 
             taskService.createTask(task);
         } else {
-            if (req.getParameter("_method").equalsIgnoreCase("delete"))
-                taskService.deleteTask(Long.parseLong(req.getParameter("id")));
+            if (req.getParameter("_method").equalsIgnoreCase("delete")){
+                Task task  =  taskService.readTask(Long.parseLong(req.getParameter("id")));
+                if(auth.getRole() == UserRole.MANAGER || auth.getId() ==  task.getCreatedBy().getId()){
+                    taskService.deleteTask(Long.parseLong(req.getParameter("id")),auth.getRole());
+                }else if(task.getAssignedTo().getId() == auth.getId() && auth.getToken().getDeletionTokenCount() > 0) {
+                    taskService.deleteTask(task.getId(),auth.getRole());
+                }
+            }
+
             else if (req.getParameter("_method").equalsIgnoreCase("put")){
                 String dueDateStr = req.getParameter("due_date");
 
@@ -120,11 +127,8 @@ public class TaskServlet  extends HttpServlet {
 
         if (auth.getRole() == UserRole.MANAGER)
             task.setAssignedTo(userService.readUser(Long.parseLong(req.getParameter("assigned_to"))));
-        
-        // Get the selected tag IDs from the request
-        
 
-        taskService.updateTask(task);
+        taskService.updateTask(task,auth.getRole());
     }
 
     private void mapData(HttpServletRequest req, Task task) {

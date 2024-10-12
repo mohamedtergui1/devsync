@@ -1,6 +1,7 @@
 package org.example.repository;
 
 import org.example.entity.Task;
+import org.example.enums.UserRole;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface TaskRepository {
 
     Task readTask(Long id);
 
-    void updateTask(Task TASK);
+    void updateTask(Task TASK,UserRole role);
 
-    void deleteTask(Long id);
+    void deleteTask(Long id, UserRole userRole);
 
 
     List<Task> listTasks();

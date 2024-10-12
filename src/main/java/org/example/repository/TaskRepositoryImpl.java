@@ -3,6 +3,8 @@ package org.example.repository;
 
 import jakarta.persistence.EntityManager;
 import org.example.entity.Task;
+import org.example.entity.Token;
+import org.example.enums.UserRole;
 import org.example.repository.base.Repository;
 
 import java.util.ArrayList;
@@ -25,15 +27,29 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
     }
 
     @Override
-    public void updateTask(Task TASK) {
-        executeInTransaction((em) -> em.merge(TASK));
+    public void updateTask(Task TASK,UserRole role) {
+        executeInTransaction((em) ->
+                {
+                    em.merge(TASK);
+                        if(TASK.getCreatedBy() != TASK.getAssignedTo() && UserRole.MANAGER != role ) {
+                            Token token = TASK.getAssignedTo().getToken();
+                            token.setUpdateTokenCount(token.getUpdateTokenCount()-1);
+                            em.merge(token);
+                        }
+
+                });
     }
 
     @Override
-    public void deleteTask(Long id) {
+    public void deleteTask(Long id , UserRole role) {
         executeInTransaction(em -> {
             Task task = em.find(Task.class, id);
             if (task != null) {
+
+                if(task.getCreatedBy() != task.getAssignedTo() && role != UserRole.MANAGER ){
+                    Token token = task.getAssignedTo().getToken();
+                    token.setUpdateTokenCount(token.getUpdateTokenCount()-1);
+                }
                 em.remove(task);
             }
         });

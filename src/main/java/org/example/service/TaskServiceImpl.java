@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.entity.Task;
+import org.example.enums.UserRole;
 import org.example.repository.TaskRepository;
 import org.example.repository.TaskRepositoryImpl;
 
@@ -28,13 +29,13 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public void updateTask(Task task) {
-        taskRepository.updateTask(task);
+    public void updateTask(Task task,UserRole role) {
+        taskRepository.updateTask(task,role);
     }
 
     @Override
-    public void deleteTask(Long id) {
-        taskRepository.deleteTask(id);
+    public void deleteTask(Long id, UserRole userRole) {
+        taskRepository.deleteTask(id,userRole);
     }
 
     @Override
