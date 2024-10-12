@@ -24,13 +24,20 @@ public class TaskServlet  extends HttpServlet {
     TagService tagService = new TagServiceImpl();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Task> tasks =  taskService.listTasks();
+        User authenticatedUser = (User) req.getSession().getAttribute("authenticatedUser");
+        if( authenticatedUser == null ) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
+        List<Task> tasks =  authenticatedUser.getRole() == UserRole.MANAGER ?  taskService.listTasks() : taskService.listTasksByUser(authenticatedUser.getId());
         List<User> users =  userService.listUsers();
         List<Tag> tags = tagService.listTags();
         req.setAttribute("tasks", tasks);
         req.setAttribute("users", users);
         req.setAttribute("tags", tags);
         req.getRequestDispatcher("tasks.jsp").forward(req, resp);
+
     }
 
     @Override

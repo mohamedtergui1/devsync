@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet {
                 request.getSession().setAttribute("authenticatedUser", user);
 
             // Redirect to a welcome page after successful login
-            response.sendRedirect("welcome.jsp");
+            response.sendRedirect("tasks");
         } catch (RuntimeException e) {
             // If login fails, forward back to the login page with an error message
             request.setAttribute("errorMessage", "Invalid username or password");

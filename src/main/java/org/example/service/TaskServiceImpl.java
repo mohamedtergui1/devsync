@@ -26,6 +26,7 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.listTasks();
     }
 
+
     @Override
     public void updateTask(Task task) {
         taskRepository.updateTask(task);
@@ -34,5 +35,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(Long id) {
         taskRepository.deleteTask(id);
+    }
+
+    @Override
+    public List<Task> listTasksByUser(Long id) {
+        return List.of();
     }
 }

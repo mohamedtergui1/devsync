@@ -13,5 +13,8 @@ public interface TaskRepository {
 
     void deleteTask(Long id);
 
+
     List<Task> listTasks();
+
+    List<Task> listTasksByUser(Long id);
 }

@@ -46,4 +46,12 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
         return tasks;
     }
 
+    @Override
+    public List<Task> listTasksByUser(Long id) {
+        EntityManager em = emf.createEntityManager();
+        List<Task> tasks = em.createQuery("SELECT T from Task T WHERE T.assignedTo = :id", Task.class).setParameter("id",id).getResultList();
+        em.close();
+        return tasks;
+    }
+
 }
