@@ -15,6 +15,7 @@ import org.example.service.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 @WebServlet(name = "tasks" , urlPatterns = "/tasks")
@@ -42,12 +43,33 @@ public class TaskServlet  extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
         if(req.getParameter("_method") == null) {
+            String dueDateStr = req.getParameter("due_date");
+
+            if (dueDateStr == null || dueDateStr.isEmpty()) {
+                req.setAttribute("error", "Due date is required");
+                doGet(req, resp);
+                return;
+            }
+
+
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            LocalDateTime dueDate = LocalDateTime.parse(dueDateStr, formatter);
+
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime threeDaysLater = now.plusDays(3);
+
+
+            if (!dueDate.isAfter(threeDaysLater)) {
+                req.setAttribute("error", "Due date must be within 3 days from now");
+                doGet(req, resp);
+                return;
+            }
             User auth = (User) req.getSession().getAttribute("authenticatedUser");
             Task task = new Task();
-            task.setTitle(req.getParameter("title"));
-            task.setDescription(req.getParameter("description"));
-            task.setDueDate(LocalDateTime.parse(req.getParameter("due_date")));
+            mapData(req, task);
             if (auth.getRole() == UserRole.MANAGER)
                  task.setAssignedTo(userService.readUser(Long.parseLong(req.getParameter("assigned_to"))));
             else
@@ -57,22 +79,34 @@ public class TaskServlet  extends HttpServlet {
 
             task.setCompleted(false);
             task.setStatus(TaskStatus.PENDING);
-            // Get the selected tag IDs from the request
-            String[] selectedTags = req.getParameterValues("tags[]");
-            List<Tag> tags = new ArrayList<>();
 
-            if (selectedTags != null) {
-                for (String tagId : selectedTags) {
-                    tags.add(tagService.readTag(Long.parseLong(tagId)));
-                }
-            }
-
-            task.setTags(tags);
             taskService.createTask(task);
         } else {
             if (req.getParameter("_method").equalsIgnoreCase("delete"))
                 taskService.deleteTask(Long.parseLong(req.getParameter("id")));
             else if (req.getParameter("_method").equalsIgnoreCase("put")){
+                String dueDateStr = req.getParameter("due_date");
+
+                if (dueDateStr == null || dueDateStr.isEmpty()) {
+                    req.setAttribute("error", "Due date is required");
+                    doGet(req, resp);
+                    return;
+                }
+
+
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                LocalDateTime dueDate = LocalDateTime.parse(dueDateStr, formatter);
+
+
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime threeDaysLater = now.plusDays(3);
+
+
+                if (!dueDate.isAfter(threeDaysLater)) {
+                    req.setAttribute("error", "Due date must be within 3 days from now");
+                    doGet(req, resp);
+                    return;
+                }
                 put(req, resp);
             }
         }
@@ -80,5 +114,31 @@ public class TaskServlet  extends HttpServlet {
     }
     public void put(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        User auth = (User) req.getSession().getAttribute("authenticatedUser");
+        Task task = taskService.readTask(Long.parseLong(req.getParameter("id")));
+        mapData(req, task);
+
+        if (auth.getRole() == UserRole.MANAGER)
+            task.setAssignedTo(userService.readUser(Long.parseLong(req.getParameter("assigned_to"))));
+        
+        // Get the selected tag IDs from the request
+        
+
+        taskService.updateTask(task);
+    }
+
+    private void mapData(HttpServletRequest req, Task task) {
+        task.setTitle(req.getParameter("title"));
+        task.setDescription(req.getParameter("description"));
+        task.setDueDate(LocalDateTime.parse(req.getParameter("due_date")));
+        String[] selectedTags = req.getParameterValues("tags[]");
+        List<Tag> tags = new ArrayList<>();
+
+        if (selectedTags != null) {
+            for (String tagId : selectedTags) {
+                tags.add(tagService.readTag(Long.parseLong(tagId)));
+            }
+        }
+        task.setTags(tags);
     }
 }

@@ -1,4 +1,4 @@
 package org.example.enums;
 
-public enum TokenType {
+public enum  TokenType {
 }

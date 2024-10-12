@@ -39,6 +39,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> listTasksByUser(Long id) {
-        return List.of();
+        return taskRepository.listTasksByUser(id);
     }
 }

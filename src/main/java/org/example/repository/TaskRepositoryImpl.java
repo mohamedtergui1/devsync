@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import org.example.entity.Task;
 import org.example.repository.base.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskRepositoryImpl extends Repository implements TaskRepository {
@@ -48,10 +49,22 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
 
     @Override
     public List<Task> listTasksByUser(Long id) {
-        EntityManager em = emf.createEntityManager();
-        List<Task> tasks = em.createQuery("SELECT T from Task T WHERE T.assignedTo = :id", Task.class).setParameter("id",id).getResultList();
-        em.close();
+        EntityManager entityManager = null;
+        List<Task> tasks = new ArrayList<>();
+
+        try {
+            entityManager = emf.createEntityManager();
+            tasks = entityManager.createQuery("SELECT T FROM Task T WHERE T.assignedTo.id = :id", Task.class)
+                    .setParameter("id", id)
+                    .getResultList();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+
         return tasks;
     }
+
 
 }
