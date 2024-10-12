@@ -3,7 +3,6 @@
 <%@ page import="org.example.entity.Tag" %>
 <%@ page import="org.example.entity.User" %>
 <%@ page import="org.example.enums.UserRole" %>
-<%@ page import="jakarta.servlet.annotation.WebServlet" %>
 <%@ page import="org.example.enums.TaskStatus" %>
 <%@ page import="java.util.stream.Collectors" %>
 
@@ -169,6 +168,7 @@
 
                 <ul id="todo-list" class="min-h-[200px] my-2 bg-gray-300 rounded-lg  space-y-2">
                     <div class="flex justify-end">
+                        <%  if(authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() || authenticatedUser.getToken().getUpdateTokenCount() > 0){ %>
                         <li>
                             <button type="button" data-modal-target="<%= task.getId() %>" data-modal-toggle="<%= task.getId() %>" class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
                                 <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -220,7 +220,6 @@
                                                 </div>
 
                                                 <%
-
                                                     if (authenticatedUser != null && authenticatedUser.getRole() == UserRole.MANAGER) {
                                                 %>
                                                 <div class="max-w-sm mx-auto">
@@ -295,6 +294,8 @@
 
 
                         </li>
+                        <% } %>
+                        <%  if(authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() || authenticatedUser.getToken().getDeletionTokenCount() > 0){ %>
                         <li>
                             <button type="button" data-modal-target="deleteModal<%=task.getId()%>"
                                     data-modal-toggle="deleteModal<%=task.getId()%>"
@@ -348,7 +349,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <% } %>
                     </div>
                     <div class="px-4 py-4 mx-5 font-normal bg-gray-300 rounded-lg my-2 ">
                         <div class="flex flex-col justify-between md:flex-row">

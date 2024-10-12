@@ -35,6 +35,16 @@ public class User {
     @OneToMany(mappedBy = "assignedTo")
     private List<Task> tasks;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Token token;
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
 
     // Constructors
     public User() {

@@ -59,6 +59,27 @@
             <version>4.0.1</version>
         </dependency>
 
+        <!-- EJB Dependency -->
+        <dependency>
+            <groupId>jakarta.ejb</groupId>
+            <artifactId>jakarta.ejb-api</artifactId>
+            <version>4.0.1</version>  <!-- Make sure this is the correct version -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- CDI API for Dependency Injection -->
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+
+        <!-- Annotations API -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.0</version>
+        </dependency>
 
 
     </dependencies>
