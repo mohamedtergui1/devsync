@@ -10,6 +10,7 @@ import org.example.entity.Tag;
 import org.example.entity.Task;
 import org.example.entity.User;
 import org.example.enums.TaskStatus;
+import org.example.enums.UserRole;
 import org.example.service.*;
 
 import java.io.IOException;
@@ -35,25 +36,30 @@ public class TaskServlet  extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(req.getParameter("_method") == null) {
+            User auth = (User) req.getSession().getAttribute("authenticatedUser");
             Task task = new Task();
             task.setTitle(req.getParameter("title"));
             task.setDescription(req.getParameter("description"));
             task.setDueDate(LocalDateTime.parse(req.getParameter("due_date")));
-            task.setAssignedTo(userService.readUser(Long.parseLong(req.getParameter("assigned_to"))));
-            task.setCreatedBy(userService.readUser(Long.parseLong(req.getParameter("created_by"))));
-             ;
+            if (auth.getRole() == UserRole.MANAGER)
+                 task.setAssignedTo(userService.readUser(Long.parseLong(req.getParameter("assigned_to"))));
+            else
+                task.setAssignedTo(auth);
+
+            task.setCreatedBy(auth);
+
             task.setCompleted(false);
             task.setStatus(TaskStatus.PENDING);
             // Get the selected tag IDs from the request
             String[] selectedTags = req.getParameterValues("tags[]");
             List<Tag> tags = new ArrayList<>();
+
             if (selectedTags != null) {
                 for (String tagId : selectedTags) {
                     tags.add(tagService.readTag(Long.parseLong(tagId)));
                 }
-            } else {
-                System.out.println("No tags were selected.");
             }
+
             task.setTags(tags);
             taskService.createTask(task);
         } else {

@@ -1,4 +1,4 @@
-<%--
+<%@ page import="org.example.entity.User" %><%--
   Created by IntelliJ IDEA.
   User: Youcode
   Date: 02/10/2024
@@ -28,8 +28,19 @@
                 <li><a href="#home" class="hover:text-secondary font-bold">Home</a></li>
                 <li><a href="#aboutus" class="hover:text-secondary font-bold">About us</a></li>
                 <li><a href="#results" class="hover:text-secondary font-bold">Results</a></li>
-                <li><a href="#reviews" class="hover:text-secondary font-bold">Reviews</a></li>
+                <%
+                    User authenticatedUser = (User) request.getSession().getAttribute("authenticatedUser");
+                    if (authenticatedUser != null) {
+                %>
+                <li><a href="#reviews" class="hover:text-secondary font-bold"><%= authenticatedUser.getUsername() %></a></li>
+                <%
+                } else {
+                %>
                 <li><a href="#portfolio" class="hover:text-secondary font-bold">Portfolio</a></li>
+                <%
+                    }
+                %>
+
                 <li><a href="#team" class="hover:text-secondary font-bold">Team</a></li>
                 <li><a href="#contact" class="hover:text-secondary font-bold">Contact</a></li>
             </ul>

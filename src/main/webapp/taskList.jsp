@@ -2,6 +2,7 @@
 <%@ page import="org.example.entity.Task" %>
 <%@ page import="org.example.entity.Tag" %>
 <%@ page import="org.example.entity.User" %>
+<%@ page import="org.example.enums.UserRole" %>
 
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full antialiased">
   <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -308,31 +309,35 @@
           <div>
             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> name</label>
             <input type="text" name="description"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex. Apple iMac 27&ldquo;">
-          </div> <div>
+          </div>
+          <div>
             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> name</label>
             <input type="datetime-local" name="due_date"  value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex. Apple iMac 27&ldquo;">
           </div>
-          <div class="max-w-sm mx-auto">
-            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a role</label>
-            <select id="countries" name="assigned_to" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <%
-              for(User user:users){
-            %>
-              <option value="<%=user.getId()%>" ><%=user.getUsername()%></option>
-              <% } %>
-            </select>
-          </div>
-          <div class="max-w-sm mx-auto">
-            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a role</label>
-            <select id="za" name="created_by" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <%
-                for(User user:users){
-              %>
-              <option value="<%=user.getId()%>" ><%=user.getUsername()%></option>
-              <% } %>
-            </select>
-          </div>
 
+          <%
+            User authenticatedUser = (User) request.getSession().getAttribute("authenticatedUser");
+            if (authenticatedUser != null && authenticatedUser.getRole() == UserRole.MANAGER) {
+          %>
+          <div class="max-w-sm mx-auto">
+            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Assigned to</label>
+            <select id="countries" name="assigned_to" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <%
+                for(User user : users) {
+                  if( authenticatedUser != null && authenticatedUser.getId() == user.getId() ) continue;
+              %>
+              <option value="<%= user.getId() %>"><%= user.getUsername() %></option>
+              <% } %>
+            </select>
+          </div>
+          <%
+            }
+          %>
+
+
+
+          <div class="max-w-sm mx-auto">
+            <label  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">tags </label>
 
             <select
                     id="select-role"
@@ -349,6 +354,7 @@
               <option value="<%=tag.getId()%>" ><%=tag.getName()%></option>
               <% } %>
             </select>
+          </div>
 
         </div>
         <div class="flex items-center space-x-4">

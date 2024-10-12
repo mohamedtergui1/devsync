@@ -1,6 +1,5 @@
 package org.example.servlet;
 
-import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +16,8 @@ import java.util.List;
 
 @WebServlet("/user")
 public class UserServlet extends HttpServlet {
-    @Inject()
-    private  UserService userService;
+
+    private  UserService userService =  new UserServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -62,7 +61,7 @@ public class UserServlet extends HttpServlet {
         newUser.setId(Long.valueOf(req.getParameter("id")));
         if(req.getParameter("password") != null && !req.getParameter("password").isEmpty()) {
             String plainPassword = req.getParameter("password");
-            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
+            String hashedPassword =BCrypt.hashpw(plainPassword, BCrypt.gensalt());
             newUser.setPassword(hashedPassword);
         }
         else {

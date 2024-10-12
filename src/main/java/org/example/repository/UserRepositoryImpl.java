@@ -8,7 +8,7 @@ import org.example.repository.base.Repository;
 
 import java.util.List;
 
-public class UserRepositoryImpl extends Repository implements UserRepository {
+public class UserRepositoryImpl extends Repository implements UserRepository,FindUserByEmail {
 
 
 
@@ -62,6 +62,23 @@ public class UserRepositoryImpl extends Repository implements UserRepository {
             em.close();
         }
         return users;
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            User user = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return null;
     }
 
 }
