@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "tasks")
 public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,11 +20,9 @@ public class Task {
     @Column(nullable = true, length = 500)
     private String description;
 
-    @Column(name = "due_date", nullable = true)
+    @Column(name = "due_date", nullable = false)
     private LocalDateTime dueDate;
 
-    @Column(name = "is_completed", nullable = false)
-    private boolean isCompleted;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,8 +49,17 @@ public class Task {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags;
+    @OneToOne( mappedBy = "task", fetch = FetchType.EAGER)
+    private Request request;
 
-    // Lifecycle callbacks for automatic timestamping
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -63,7 +71,8 @@ public class Task {
         updatedAt = LocalDateTime.now();
     }
 
-    // Getters
+
+
     public Long getId() {
         return id;
     }
@@ -78,10 +87,6 @@ public class Task {
 
     public LocalDateTime getDueDate() {
         return dueDate;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
     }
 
     public TaskStatus getStatus() {
@@ -125,10 +130,6 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
-    }
-
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
@@ -152,4 +153,6 @@ public class Task {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
+
 }

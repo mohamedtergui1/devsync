@@ -77,7 +77,7 @@ public class TaskServlet  extends HttpServlet {
 
             task.setCreatedBy(auth);
 
-            task.setCompleted(false);
+
             task.setStatus(TaskStatus.PENDING);
 
             taskService.createTask(task);
@@ -125,7 +125,7 @@ public class TaskServlet  extends HttpServlet {
                      return;
                  }
                  task.setStatus(TaskStatus.COMPLETED);
-                 task.setCompleted(true);
+
                  taskService.updateTask(task,UserRole.MANAGER);
 
             }
