@@ -19,6 +19,7 @@ public class RequestServlet extends HttpServlet {
     private TaskService taskService = new TaskServiceImpl();
     private RequestService requestService = new RequestServiceImpl();
     private UserService userService = new UserServiceImpl();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -31,8 +32,8 @@ public class RequestServlet extends HttpServlet {
             if (req.getParameter("_method") == null) {
                 Task task = taskService.readTask(id);
                 if (task != null && task.getAssignedTo().getId() == authUser.getId()) {
-                    taskService.updateTask(task,UserRole.USER);
-                    if(task.getRequest() == null) {
+                    taskService.updateTask(task, UserRole.USER);
+                    if (task.getRequest() == null && task.getAssignedTo().getToken().getUpdateTokenCount() > 0) {
                         request.setTask(task);
                         requestService.createRequest(request);
                     }
@@ -44,7 +45,7 @@ public class RequestServlet extends HttpServlet {
                 Task task = request.getTask();
                 User user = userService.readUser(Long.parseLong(req.getParameter("newAssign").trim()));
                 task.setAssignedTo(user);
-                taskService.updateTask(task,UserRole.MANAGER);
+                taskService.updateTask(task, UserRole.MANAGER);
 
             } else if (req.getParameter("_method").equalsIgnoreCase("reject") && authUser.getRole() == UserRole.MANAGER) {
                 request = requestService.readRequest(Long.parseLong(req.getParameter("id")));

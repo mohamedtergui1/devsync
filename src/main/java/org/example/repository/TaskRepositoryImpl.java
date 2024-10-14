@@ -48,7 +48,8 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
 
                 if(task.getCreatedBy() != task.getAssignedTo() || role != UserRole.MANAGER ){
                     Token token = task.getAssignedTo().getToken();
-                    token.setUpdateTokenCount(token.getUpdateTokenCount()-1);
+                    token.setDeletionTokenCount(token.getDeletionTokenCount()-1);
+                    em.merge(token);
                 }
                 em.remove(task);
             }

@@ -446,7 +446,7 @@
 
                         </li>
                         <% } %>
-                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() || authenticatedUser.getToken().getDeletionTokenCount() > 0) { %>
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || authenticatedUser.getToken().getDeletionTokenCount() > 0 || task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
                         <li>
                             <button type="button" data-modal-target="deleteModal<%=task.getId()%>"
                                     data-modal-toggle="deleteModal<%=task.getId()%>"
@@ -521,7 +521,8 @@
                         </h2>
                         <h2><%=task.getCreatedBy() != null ? task.getCreatedBy().getUsername() : "no one"%>
                         </h2>
-                        <p><%=task.getDueDate()%></p>
+                        <p><%=task.getDueDate()%>
+                        </p>
 
                     </div>
                 </ul>
@@ -542,7 +543,7 @@
                 <ul id="todo-list" class="min-h-[200px] my-2 bg-green-300 rounded-lg  space-y-2">
                     <div class="flex justify-end gap-5 ">
 
-                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId()) { %>
 
 
                         <li>
@@ -691,7 +692,7 @@
 
                         </li>
                         <% } %>
-                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId()) { %>
                         <li>
                             <button type="button" data-modal-target="deleteModal<%=task.getId()%>"
                                     data-modal-toggle="deleteModal<%=task.getId()%>"
@@ -766,7 +767,8 @@
                         </h2>
                         <h2><%=task.getCreatedBy() != null ? task.getCreatedBy().getUsername() : "no one"%>
                         </h2>
-                        <p><%=task.getCreatedAt()%></p>
+                        <p><%=task.getCreatedAt()%>
+                        </p>
                     </div>
                 </ul>
 
@@ -1004,7 +1006,8 @@
                         </h2>
                         <h2><%=task.getCreatedBy() != null ? task.getCreatedBy().getUsername() : "no one"%>
                         </h2>
-                        <p><%=task.getCreatedAt()%></p>
+                        <p><%=task.getCreatedAt()%>
+                        </p>
                     </div>
                 </ul>
                 <% } %>
