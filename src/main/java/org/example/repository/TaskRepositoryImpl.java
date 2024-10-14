@@ -27,11 +27,11 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
     }
 
     @Override
-    public void updateTask(Task TASK,UserRole role) {
+    public void   updateTask(Task TASK,UserRole role) {
         executeInTransaction((em) ->
                 {
                     em.merge(TASK);
-                        if(TASK.getCreatedBy() != TASK.getAssignedTo() && UserRole.MANAGER != role ) {
+                        if(TASK.getCreatedBy() != TASK.getAssignedTo() || UserRole.MANAGER != role ) {
                             Token token = TASK.getAssignedTo().getToken();
                             token.setUpdateTokenCount(token.getUpdateTokenCount()-1);
                             em.merge(token);
@@ -46,7 +46,7 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
             Task task = em.find(Task.class, id);
             if (task != null) {
 
-                if(task.getCreatedBy() != task.getAssignedTo() && role != UserRole.MANAGER ){
+                if(task.getCreatedBy() != task.getAssignedTo() || role != UserRole.MANAGER ){
                     Token token = task.getAssignedTo().getToken();
                     token.setUpdateTokenCount(token.getUpdateTokenCount()-1);
                 }

@@ -173,11 +173,87 @@
 
                 <ul id="todo-list" class="min-h-[200px] my-2 bg-gray-300 rounded-lg  space-y-2">
                     <div class="flex justify-end gap-5 ">
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER && task.getRequest() != null && task.getRequest().getStatus() == 'P') { %>
+                        <li class="flex justify-around">
 
+
+                            <button data-modal-target="progress-modal<%=task.getId()%>"
+                                    data-modal-toggle="progress-modal<%=task.getId()%>" type="button"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                assign it to another
+                            </button>
+                            <form action="request" method="post">
+                                <input name="_method" value="reject" type="hidden"/>
+                                <input name="id" value="<%=task.getRequest().getId()%>" type="hidden"/>
+                                <button
+                                        class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+                                    reject
+                                </button>
+                            </form>
+
+
+                            <div id="progress-modal<%=task.getId()%>" tabindex="-1" aria-hidden="true"
+                                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <!-- Modal content -->
+                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                        <button type="button"
+                                                class="absolute top-3 mb-24 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                data-modal-hide="progress-modal<%=task.getId()%>">
+                                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none" viewBox="0 0 14 14">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                      stroke-linejoin="round" stroke-width="2"
+                                                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                            </svg>
+                                            <span class="sr-only">Close modal</span>
+                                        </button>
+
+                                        <form method="post" action="request" class="max-w-sm  mx-auto">
+                                            <div class="py-4">
+                                                <input name="_method" value="accept" type="hidden"/>
+                                                <input name="id" value="<%=task.getRequest().getId()%>" type="hidden"/>
+                                            </div>
+                                            <label for="a"
+                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
+                                                an option</label>
+                                            <select id="a" name="newAssign"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                <option selected disabled>Choose another user</option>
+                                                <% for (User user : users) {
+                                                    if (user.getId() != task.getAssignedTo().getId() && user.getRole() != UserRole.MANAGER) { %>
+                                                <option value="<%=user.getId()%>"><%=user.getUsername()%>
+                                                </option>
+                                                <%
+                                                        }
+                                                    }
+                                                %>
+                                            </select>
+                                            <div class="p-4 md:p-5">
+                                                <div class="flex items-center mt-6 space-x-4 rtl:space-x-reverse">
+                                                    <button
+                                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                        update
+                                                    </button>
+                                                    <button data-modal-hide="progress-modal<%=task.getId()%>"
+                                                            type="button"
+                                                            class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+                        <%}%>
                         <% if (task.getRequest() == null && authenticatedUser.getToken().getUpdateTokenCount() > 0 && authenticatedUser.getRole() != UserRole.MANAGER) { %>
                         <li>
-                            <form method="post">
-                                <input name="_method" value="changeTask" type="hidden"/>
+                            <form action="request" method="post">
                                 <input name="id" value="<%= task.getId() %>" type="hidden"/>
                                 <button
                                         class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
@@ -191,7 +267,7 @@
                                 </button>
                             </form>
                         </li>
-                        <% } else if (task.getRequest() != null && task.getRequest().getStatus() == 'P') {%>
+                        <% } else if (task.getRequest() != null && task.getRequest().getStatus() == 'P' && task.getAssignedTo().getId() == authenticatedUser.getId()) {%>
 
                         <span class="px-2 py-1">
                                     request pending
@@ -207,6 +283,7 @@
                             <form method="post">
                                 <input type="hidden" name="id" value="<%=task.getId()%>">
                                 <input type="hidden" name="_method" value="done">
+
                                 <button class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
                                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20"
                                          fill="currentColor" aria-hidden="true">
@@ -444,6 +521,8 @@
                         </h2>
                         <h2><%=task.getCreatedBy() != null ? task.getCreatedBy().getUsername() : "no one"%>
                         </h2>
+                        <p><%=task.getDueDate()%></p>
+
                     </div>
                 </ul>
 
@@ -456,23 +535,6 @@
             </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <div class="flex-1 bg-gray-200 p-4 rounded-lg shadow">
                 <h2 class="text-xl font-semibold mb-4">Done</h2>
                 <% for (Task task : tasks.stream().filter((e) -> e.getStatus() == TaskStatus.COMPLETED).collect(Collectors.toList())) { %>
@@ -480,7 +542,7 @@
                 <ul id="todo-list" class="min-h-[200px] my-2 bg-green-300 rounded-lg  space-y-2">
                     <div class="flex justify-end gap-5 ">
 
-                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() || authenticatedUser.getToken().getUpdateTokenCount() > 0) { %>
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
 
 
                         <li>
@@ -629,7 +691,7 @@
 
                         </li>
                         <% } %>
-                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() || authenticatedUser.getToken().getDeletionTokenCount() > 0) { %>
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
                         <li>
                             <button type="button" data-modal-target="deleteModal<%=task.getId()%>"
                                     data-modal-toggle="deleteModal<%=task.getId()%>"
@@ -704,6 +766,7 @@
                         </h2>
                         <h2><%=task.getCreatedBy() != null ? task.getCreatedBy().getUsername() : "no one"%>
                         </h2>
+                        <p><%=task.getCreatedAt()%></p>
                     </div>
                 </ul>
 
@@ -941,6 +1004,7 @@
                         </h2>
                         <h2><%=task.getCreatedBy() != null ? task.getCreatedBy().getUsername() : "no one"%>
                         </h2>
+                        <p><%=task.getCreatedAt()%></p>
                     </div>
                 </ul>
                 <% } %>

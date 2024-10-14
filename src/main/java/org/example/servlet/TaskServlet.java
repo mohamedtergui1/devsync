@@ -120,7 +120,7 @@ public class TaskServlet  extends HttpServlet {
                          LocalDateTime now = LocalDateTime.now();
 
                  if(now.isAfter(task.getDueDate())) {
-                     req.setAttribute("error", "you cant make as done because the due date is passed");
+                     req.setAttribute("error", "you cant make as done because the due date is passed" );
                      doGet(req, resp);
                      return;
                  }

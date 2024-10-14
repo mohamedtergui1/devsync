@@ -18,8 +18,7 @@ public class LoginServlet extends HttpServlet {
 
     private AuthService authService;
 
-    // Hibernate SessionFactory setup
-    private static SessionFactory sessionFactory;
+
 
     @Override
     public void init() throws ServletException {
@@ -52,9 +51,4 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    @Override
-    public void destroy() {
-        // Close the SessionFactory when the servlet is destroyed
-        sessionFactory.close();
-    }
 }

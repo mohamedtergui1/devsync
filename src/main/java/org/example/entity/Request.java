@@ -21,7 +21,7 @@ public class Request {
     private LocalDateTime dateOfRequest;
 
 
-    @Column(name = "status", nullable = true)
+    @Column(name = "status", nullable = false)
     private char status;
 
 
@@ -33,7 +33,11 @@ public class Request {
         this.dateOfRequest = dateOfRequest;
         this.status = status;
     }
-
+    @PrePersist
+    protected void onCreate() {
+        dateOfRequest = LocalDateTime.now();
+        status = 'P';
+    }
     // Getters and Setters
     public Long getId() {
         return id;
@@ -67,14 +71,5 @@ public class Request {
         this.status = status;
     }
 
-    // toString method for debugging purposes
-    @Override
-    public String toString() {
-        return "Request{" +
-                "id=" + id +
-                ", task=" + task.getId() +
-                ", dateOfRequest=" + dateOfRequest +
-                ", status='" + status + '\'' +
-                '}';
-    }
+
 }
