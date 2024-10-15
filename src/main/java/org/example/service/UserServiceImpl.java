@@ -1,5 +1,6 @@
 package org.example.service;
 
+import jakarta.annotation.security.RolesAllowed;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
 import org.example.repository.UserRepositoryImpl;
