@@ -26,7 +26,11 @@ public class LoginServlet extends HttpServlet {
         // Initialize the AuthService (no DI or EJB, just direct instantiation)
         authService = new AuthServiceImpl();
 
+    }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/mainLogin.jsp").forward(req, resp);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class LoginServlet extends HttpServlet {
         } catch (RuntimeException e) {
             // If login fails, forward back to the login page with an error message
             request.setAttribute("errorMessage", "Invalid username or password");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/mainLogin.jsp").forward(request, response);
         }
     }
 

@@ -30,6 +30,8 @@ public class TaskServlet  extends HttpServlet {
             resp.sendRedirect("login.jsp");
             return;
         }
+        req.getSession().setAttribute("authenticatedUser", userService.readUser(authenticatedUser.getId()));
+
 
         List<Task> tasks =  authenticatedUser.getRole() == UserRole.MANAGER ?  taskService.listTasks() : taskService.listTasksByUser(authenticatedUser.getId());
         List<User> users =  userService.listUsers();
