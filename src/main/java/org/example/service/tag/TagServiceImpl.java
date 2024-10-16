@@ -1,4 +1,4 @@
-package org.example.repository;
+package org.example.service.tag;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -9,7 +9,7 @@ import org.example.entity.Tag;
 import java.util.List;
 
 @Stateless
-public class TagRepositoryImpl  implements TagRepository {
+public class TagServiceImpl  implements TagService {
 
     // EJB will inject the EntityManager
     @PersistenceContext(unitName = "jpa")

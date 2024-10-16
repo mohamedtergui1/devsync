@@ -1,7 +1,6 @@
 package org.example.servlet;
 
 import jakarta.ejb.EJB;
-import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,8 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.entity.User;
 import org.example.enums.UserRole;
-import org.example.service.UserService;
-import org.example.service.UserServiceImpl;
+import org.example.service.user.UserService;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;

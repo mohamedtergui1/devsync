@@ -1,10 +1,11 @@
-package org.example.repository;
+package org.example.service.task;
 
 import org.example.entity.Task;
 
 import java.util.List;
 
-public interface TaskRepository {
+
+public interface TaskService {
     void createTask(Task TASK);
 
     Task readTask(Long id);
@@ -14,4 +15,6 @@ public interface TaskRepository {
     void deleteTask(Long id);
 
     List<Task> listTasks();
+
+    List<Task> listTasksByUser(Long id);
 }

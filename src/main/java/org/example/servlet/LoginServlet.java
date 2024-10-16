@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.entity.User;
-import org.example.service.LoginService;
+
+import org.example.service.auth.AuthService;
+import org.example.service.user.UserService;
 
 import java.io.IOException;
 
@@ -16,7 +18,7 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
 
     @EJB
-    private LoginService loginService;
+    private AuthService authService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,7 +27,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
 
-        User authenticatedUser = loginService.authenticate(email, password);
+        User authenticatedUser = authService.login(email,password);
 
         if (authenticatedUser != null) {
 
@@ -34,7 +36,8 @@ public class LoginServlet extends HttpServlet {
                 session.invalidate();
             }
             session = request.getSession(true);
-            session.setAttribute("loggedInUser", authenticatedUser);
+            session.setAttribute("authenticatedUser", authenticatedUser);
+            response.sendRedirect("tasks");
 
         } else {
 

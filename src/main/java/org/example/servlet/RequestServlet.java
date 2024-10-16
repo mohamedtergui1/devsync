@@ -1,0 +1,68 @@
+package org.example.servlet;
+
+import jakarta.ejb.EJB;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.example.entity.Request;
+import org.example.entity.Task;
+import org.example.entity.User;
+import org.example.enums.UserRole;
+import org.example.service.request.RequestService;
+import org.example.service.task.TaskService;
+import org.example.service.user.UserService;
+
+import java.io.IOException;
+
+@WebServlet(name = "request", urlPatterns = "/request")
+public class RequestServlet extends HttpServlet {
+    @EJB
+    private TaskService taskService;
+    @EJB
+    private RequestService requestService ;
+    @EJB
+    private UserService userService;
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+
+            User authUser = (User) req.getSession().getAttribute("authenticatedUser");
+            Long id = Long.parseLong(req.getParameter("id").trim());
+
+            Request request = new Request();
+
+            if (req.getParameter("_method") == null) {
+                Task task = taskService.readTask(id);
+                if (task != null && task.getAssignedTo().getId() == authUser.getId()) {
+                    taskService.updateTask(task);
+                    if (task.getRequest() == null && task.getAssignedTo().getToken().getUpdateTokenCount() > 0) {
+                        request.setTask(task);
+                        requestService.createRequest(request);
+                    }
+                }
+            } else if (req.getParameter("_method").equalsIgnoreCase("accept") && authUser.getRole() == UserRole.MANAGER) {
+                request = requestService.readRequest(Long.parseLong(req.getParameter("id")));
+                request.setStatus('A');
+                requestService.updateRequest(request);
+                Task task = request.getTask();
+                User user = userService.readUser(Long.parseLong(req.getParameter("newAssign").trim()));
+                task.setAssignedTo(user);
+                taskService.updateTask(task);
+
+            } else if (req.getParameter("_method").equalsIgnoreCase("reject") && authUser.getRole() == UserRole.MANAGER) {
+                request = requestService.readRequest(Long.parseLong(req.getParameter("id")));
+                request.setStatus('R');
+                requestService.updateRequest(request);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+        resp.sendRedirect("tasks");
+
+    }
+}
