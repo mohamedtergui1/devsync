@@ -1,6 +1,7 @@
 package org.example.servlet;
 
 import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import org.example.entity.Task;
 import org.example.entity.User;
 import org.example.enums.TaskStatus;
 import org.example.enums.UserRole;
+import org.example.errors.ErrorLogger;
 import org.example.service.tag.TagService;
 import org.example.service.task.TaskService;
 import org.example.service.user.UserService;
@@ -29,6 +31,8 @@ public class TaskServlet  extends HttpServlet {
     UserService userService;
     @EJB
     TagService tagService;
+    @Inject
+    ErrorLogger errorLogger;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User authenticatedUser = (User) req.getSession().getAttribute("authenticatedUser");

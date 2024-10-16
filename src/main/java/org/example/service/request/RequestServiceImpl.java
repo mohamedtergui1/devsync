@@ -1,10 +1,11 @@
 package org.example.service.request;
 
 
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.example.entity.Request;
-
+@Stateless
 public class RequestServiceImpl implements RequestService {
     @PersistenceContext(unitName = "jpa")
     EntityManager em;
