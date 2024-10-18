@@ -446,7 +446,7 @@
 
                         </li>
                         <% } %>
-                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || authenticatedUser.getToken().getDeletionTokenCount() > 0 || task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
+                        <% if (authenticatedUser.getRole() == UserRole.MANAGER || (authenticatedUser.getToken().getDeletionTokenCount() > 0  && task.getRequest() == null)|| task.getCreatedBy().getId() == authenticatedUser.getId() ) { %>
                         <li>
                             <button type="button" data-modal-target="deleteModal<%=task.getId()%>"
                                     data-modal-toggle="deleteModal<%=task.getId()%>"

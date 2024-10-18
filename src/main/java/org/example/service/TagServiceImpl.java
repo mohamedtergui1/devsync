@@ -8,6 +8,12 @@ import java.util.List;
 
 public class TagServiceImpl implements TagService {
     TagRepository tagRepository = new TagRepositoryImpl();
+    public TagServiceImpl( TagRepository tagRepository ) {
+            this.tagRepository = tagRepository;
+    }
+    public TagServiceImpl() {
+
+    }
     @Override
     public void createTag(Tag tag) {
         tagRepository.createTag(tag);

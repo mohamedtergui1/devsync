@@ -9,7 +9,14 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository = new UserRepositoryImpl();
+    private  UserRepository userRepository = new UserRepositoryImpl();
+
+    public UserServiceImpl(UserRepository userRepository) {
+
+    }
+    public UserServiceImpl(){
+
+    }
 
     @Override
     public void createUser(User user) {
