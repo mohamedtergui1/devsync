@@ -8,10 +8,8 @@ import org.example.repository.TaskRepositoryImpl;
 import java.util.List;
 
 public class TaskServiceImpl implements TaskService {
-    TaskRepository taskRepository;
-    public TaskServiceImpl() {
-        taskRepository = new TaskRepositoryImpl();
-    }
+    public TaskRepository taskRepository = new TaskRepositoryImpl();
+
     @Override
     public void createTask(Task task) {
         taskRepository.createTask(task);

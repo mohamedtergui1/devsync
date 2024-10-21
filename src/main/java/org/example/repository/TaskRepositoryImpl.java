@@ -10,7 +10,7 @@ import org.example.repository.base.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskRepositoryImpl extends Repository implements TaskRepository {
+public class TaskRepositoryImpl extends Repository implements TaskRepository,StatisticOfEntity {
 
     @Override
     public void createTask(Task task) {
@@ -83,5 +83,15 @@ public class TaskRepositoryImpl extends Repository implements TaskRepository {
         return tasks;
     }
 
+
+    @Override
+    public Long getCount() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT COUNT(t) FROM Task t", Long.class).getSingleResult();
+        } finally {
+            em.close(); // Close the EntityManager to avoid resource leaks
+        }
+    }
 
 }

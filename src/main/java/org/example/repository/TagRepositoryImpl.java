@@ -4,9 +4,11 @@ import jakarta.persistence.EntityManager;
 import org.example.entity.Tag;
 import org.example.repository.base.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class TagRepositoryImpl extends Repository implements TagRepository {
+public class TagRepositoryImpl extends Repository implements TagRepository,TagStatistic {
 
     @Override
     public void createTag(Tag tag) {
@@ -44,4 +46,36 @@ public class TagRepositoryImpl extends Repository implements TagRepository {
         List<Tag> tags = em.createQuery("SELECT T FROM Tag T", Tag.class).getResultList();
         return tags;
     }
+
+    @Override
+    public Long getCount() {
+        EntityManager em = emf.createEntityManager();
+        return em.createQuery("SELECT COUNT(*) FROM Tag", Long.class).getSingleResult();
+    }
+
+
+    @Override
+    public Map<Tag, Long> getCountTaskByTag() {
+        EntityManager em = emf.createEntityManager();
+        try {
+
+            List<Object[]> results = em.createQuery(
+                    "SELECT t, COUNT(tt) FROM Tag t JOIN t.tasks tt GROUP BY t", Object[].class
+            ).getResultList();
+
+
+            Map<Tag, Long> tagTaskCountMap = new HashMap<>();
+            for (Object[] result : results) {
+                Tag tag = (Tag) result[0];
+                Long count = (Long) result[1];
+                tagTaskCountMap.put(tag, count);
+            }
+
+            return tagTaskCountMap;
+        } finally {
+            em.close();
+        }
+    }
+
+
 }

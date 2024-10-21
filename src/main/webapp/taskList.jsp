@@ -275,7 +275,7 @@
 
                         <%} else if (task.getRequest() != null && task.getRequest().getStatus() == 'R') { %>
 
-                        <span class="px-2 py-1">rejected</span>
+                        <span class="px-2 py-1 bg-red-500 my-1 text-white rounded  ">rejected</span>
 
                         <%}%>
                         <% if (task.getAssignedTo().getId() == authenticatedUser.getId()) { %>

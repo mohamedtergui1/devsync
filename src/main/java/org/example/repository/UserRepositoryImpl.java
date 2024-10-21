@@ -9,12 +9,12 @@ import org.example.repository.base.Repository;
 
 import java.util.List;
 
-public class UserRepositoryImpl extends Repository implements UserRepository,FindUserByEmail {
+public class UserRepositoryImpl extends Repository implements UserRepository,FindUserByEmail,StatisticOfEntity {
 
 
 
     @Override
-    public void createUser(User user) {
+    public void createUser(User user)  {
         executeInTransaction((em) -> {
             // Persist the User entity
             em.persist(user);
@@ -93,4 +93,9 @@ public class UserRepositoryImpl extends Repository implements UserRepository,Fin
         return null;
     }
 
+    @Override
+    public Long getCount() {
+        EntityManager em = emf.createEntityManager();
+        return em.createQuery("SELECT COUNT(u) FROM User u", Long.class).getSingleResult();
+    }
 }

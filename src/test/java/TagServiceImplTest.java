@@ -1,5 +1,6 @@
 import org.example.entity.Tag;
 import org.example.repository.TagRepository;
+import org.example.service.TagService;
 import org.example.service.TagServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class TagServiceImplTest {
 
     @Mock
-    private TagRepository tagRepository;  // Mock the interface, not the implementation
+    private TagRepository tagRepository;
 
     @InjectMocks
     private TagServiceImpl tagService;
@@ -27,7 +28,7 @@ public class TagServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        tag = new Tag("adz");  // Set up a Tag object with name "adz"
+        tag = new Tag("adz");
     }
 
     @Test
@@ -36,37 +37,37 @@ public class TagServiceImplTest {
         tagService.createTag(tag);
 
         // Assert
-        verify(tagRepository, times(1)).createTag(tag);  // Verify repository's createTag was called once
+        verify(tagRepository, times(1)).createTag(tag);
     }
 
     @Test
     public void testReadTag() {
         // Arrange
-        when(tagRepository.readTag(1L)).thenReturn(tag);  // Mock the repository to return the tag for the given ID
+        when(tagRepository.readTag(1L)).thenReturn(tag);
 
         // Act
         Tag result = tagService.readTag(1L);
 
         // Assert
-        assertNotNull(result); // Assert that the result is not null
-        assertEquals("adz", result.getName()); // Assert that the tag's name is "adz"
-        verify(tagRepository, times(1)).readTag(1L); // Verify repository's readTag was called once
+        assertNotNull(result);
+        assertEquals("adz", result.getName());
+        verify(tagRepository, times(1)).readTag(1L);
     }
 
     @Test
     public void testListTags() {
         // Arrange
-        List<Tag> tags = Arrays.asList(tag, new Tag("example"));  // Create a list of tags
-        when(tagRepository.listTags()).thenReturn(tags);  // Mock the repository to return the list of tags
+        List<Tag> tags = Arrays.asList(tag, new Tag("example"));
+        when(tagRepository.listTags()).thenReturn(tags);
 
         // Act
         List<Tag> result = tagService.listTags();
 
         // Assert
         assertNotNull(result);
-        assertEquals(2, result.size()); // Assert that the list contains two tags
-        assertTrue(result.contains(tag)); // Assert that the list contains the tag
-        verify(tagRepository, times(1)).listTags();  // Verify repository's listTags was called once
+        assertEquals(2, result.size());
+        assertTrue(result.contains(tag));
+        verify(tagRepository, times(1)).listTags();
     }
 
     @Test

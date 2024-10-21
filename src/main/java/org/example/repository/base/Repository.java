@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-public class Repository {
+public abstract class  Repository {
     protected final EntityManagerFactory emf;
     public Repository() {
         emf = Persistence.createEntityManagerFactory("jpa");

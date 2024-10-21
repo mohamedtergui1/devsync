@@ -25,24 +25,25 @@
         <!-- Center section: Menu -->
         <nav class="hidden md:flex md:flex-grow justify-center">
             <ul class="flex justify-center space-x-4 text-white">
-                <li><a href="#home" class="hover:text-secondary font-bold">Home</a></li>
-                <li><a href="#aboutus" class="hover:text-secondary font-bold">About us</a></li>
-                <li><a href="#results" class="hover:text-secondary font-bold">Results</a></li>
+                <li><a href="user" class="hover:text-secondary font-bold">users</a></li>
+                <li><a href="tags" class="hover:text-secondary font-bold">tags</a></li>
+                <li><a href="statistic" class="hover:text-secondary font-bold">statistic</a></li>
+
                 <%
                     User authenticatedUser = (User) request.getSession().getAttribute("authenticatedUser");
                     if (authenticatedUser != null) {
                 %>
                 <li><a href="#reviews" class="hover:text-secondary font-bold"><%= authenticatedUser.getUsername() %></a></li>
+                <li><a href="#aboutus" class="hover:text-secondary font-bold">tasks</a></li>
+
                 <%
                 } else {
                 %>
-                <li><a href="#portfolio" class="hover:text-secondary font-bold">Portfolio</a></li>
+                        <li><a href="login" class="hover:text-secondary font-bold">Log In</a></li>
                 <%
                     }
                 %>
 
-                <li><a href="#team" class="hover:text-secondary font-bold">Team</a></li>
-                <li><a href="#contact" class="hover:text-secondary font-bold">Contact</a></li>
             </ul>
         </nav>
 
