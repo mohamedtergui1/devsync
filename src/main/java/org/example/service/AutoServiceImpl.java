@@ -35,28 +35,8 @@ public class AutoServiceImpl implements AutoService {
         }
     }
 
-    @Schedule(hour = "0", minute = "0", persistent = false)
-    public void checkRequestToken() {
-        EntityManager em = Persistence.createEntityManagerFactory("jpa").createEntityManager();
-        try {
-            em.getTransaction().begin();
-            List<Token> tokens = em.createQuery("from Token", Token.class).getResultList();
-            for (Token token : tokens) {
-                token.setUpdateTokenCount(2);
-                em.merge(token);
-            }
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-    }
-
-
     @Schedule(hour = "*", minute = "0", second = "0", persistent = false)
-    public void checkTaskDueDate() {
+    public void checkRequestDate() {
         EntityManager em = Persistence.createEntityManagerFactory("jpa").createEntityManager();
         try {
             LocalDateTime time = LocalDateTime.now().plusHours(12);
@@ -66,20 +46,40 @@ public class AutoServiceImpl implements AutoService {
                     .setParameter("time", time)
                     .getResultList();
 
-            em.getTransaction().begin(); // Start a transaction
+            em.getTransaction().begin();
             for (Request request : requests) {
                 Token token = request.getTask().getAssignedTo().getToken();
                 token.setUpdateTokenCount(token.getUpdateTokenCount() + 2);
                 token.setDeletionTokenCount(token.getDeletionTokenCount() + 1);
-                em.merge(token); // Merge the updated token back to the context
+                em.merge(token);
             }
-            em.getTransaction().commit(); // Commit the transaction
+            em.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
             if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback(); // Rollback on error
+                em.getTransaction().rollback();
             }
         } finally {
+            em.close();
+        }
+    }
+
+    @Schedule( second = "0", persistent = false)
+    public void checkTaskDueDate() {
+        EntityManager em = Persistence.createEntityManagerFactory("jpa").createEntityManager();
+        try {
+
+            List<Task> tasks = em.createQuery("from Task t WHERE t.status != :status AND t.dueDate < CURRENT_TIMESTAMP", Task.class)
+                    .setParameter("status", TaskStatus.COMPLETED)
+                    .getResultList();
+
+            for (Task task : tasks) {
+                task.setStatus(TaskStatus.OVERDUE);
+                em.merge(task);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             em.close();
         }
     }
